@@ -37,7 +37,7 @@ Você pode estar organizando o seu diretório packer com os arquivos abaixo, vam
 
 **provider.pkr.hcl** Contém informações sobre o tipo de provedor, como o nome da conta, região e outras configurações específicas do provedor. Vamos ao código:
 
-```packer=
+```terraform
 #provider.pkr.hcl
 packer {
   required_plugins {
@@ -51,7 +51,7 @@ packer {
 
 **builders.pkr.hcl** Contém informações sobre o tipo de máquina virtual que será criada, como sistema operacional, tamanho da memória, armazenamento e outras configurações relacionadas à infraestrutura. Vamos ao código:
 
-```packer=
+```terraform
 #builders.pkr.hcl
 build {
   name    = "ami-packer"
@@ -68,7 +68,7 @@ build {
 
 **sources.pkr.hcl** Contém informações sobre o tipo de origem, como um arquivo ISO, uma imagem pré-existente ou uma receita do Chef. Vamos ao código:
 
-```packer=
+```terraform
 #sources.pkr.hcl
 source "amazon-ebs" "al-2023" {
   ami_name      = "${var.ami_prefix}-${local.timestamp}"
@@ -92,7 +92,7 @@ source "amazon-ebs" "al-2023" {
 
 **variable.pkr.hcl** Contém informações sobre o tipo de variável, como seu nome, tipo e valor padrão, que podem ser substituídos por um valor personalizado durante a execução do processo. Vamos ao código:
 
-```packer=
+```terraform
 #variable.pkr.hcl
 variable "ami_prefix" {
   type    = string
@@ -102,7 +102,7 @@ variable "ami_prefix" {
 
 **locals.pkr.hcl** E Um valor local atribui um nome a uma expressão , portanto, você pode usar o nome várias vezes em um módulo em vez de repetir a expressão. Vamos ao código:
 
-```packer=
+```terraform
 #locals.pkr.hcl
 locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")
@@ -111,7 +111,7 @@ locals {
 
 Criei o diretório **install** apenas para organizar os scripts de instalação do que for interessante, no caso vou estar instalando o Nginx com um arquivo shell **nginx.sh**. Vamos ao código:
 
-```bash=
+```shell
 #nginx.sh
 #!/bin/bash
 
@@ -135,7 +135,7 @@ Tudo certo, vamos agora ao Azure Pipelines. 
 
 Para organizar também criei um diretório chamado pipelines e inclui o arquivo azure_pipelines.yml. Vamos ao código:
 
-```azure=
+```yaml
 #azure_pipelines.yml
 trigger:
   branches:
