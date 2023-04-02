@@ -1,0 +1,39 @@
+trigger:
+  branches:
+    include:
+    - master
+pool:
+  vmImage: Ubuntu-20.04
+stages:
+- stage: BuildAMI
+  displayName: Build AMI
+  jobs:
+  - job: BuildAMI
+    displayName: 'Build AMI with Packer'
+    steps:
+      - task: Bash@3
+        displayName: 'Install Packer'
+        inputs:
+          targetType: 'inline'
+          script: |
+              echo "# Downloading Packer v1.8.6"
+              wget https://releases.hashicorp.com/packer/1.7.6/packer_1.7.6_linux_amd64.zip
+              echo "# Unzipping files"
+              unzip packer_1.7.6_linux_amd64.zip
+          
+              echo "# Configuring packer and checking version"
+              export PACKER_PATH=$(which packer)
+              ls -lha
+              sudo mv packer $PACKER_PATH
+
+              packer -v
+      - task: AWSShellScript@1
+        displayName: 'Build AMI'
+        inputs:
+          awsCredentials: aws-teste-dev
+          regionName: $(AWS_REGION)
+          scriptType: 'inline'
+          inlineScript: |
+            cd ./packer
+            packer init .
+            packer build .
